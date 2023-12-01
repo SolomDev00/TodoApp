@@ -1,6 +1,8 @@
+import InputErrorMessage from "../components/InputErrorMessage";
 import Button from "../components/schema/Button";
 import Input from "../components/schema/Input";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { REGISTER_FORM } from "../data";
 interface IFormInput {
   username: string;
   email: string;
@@ -13,7 +15,24 @@ const RegisterPage = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<IFormInput>();
+
+  // Handlers
   const onSubmit: SubmitHandler<IFormInput> = (data) => console.log(data);
+
+  // Renders
+  const renderRegisterForm = REGISTER_FORM.map(
+    ({ name, placeholder, type, validation }, idx) => (
+      <div key={idx}>
+        <Input
+          type={type}
+          placeholder={placeholder}
+          {...register(name, validation)}
+        />
+
+        {errors[name] && <InputErrorMessage msg={errors[name]?.message} />}
+      </div>
+    )
+  );
 
   return (
     <div className="max-w-md mx-auto">
@@ -21,13 +40,7 @@ const RegisterPage = () => {
         Register to get access!
       </h2>
       <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
-        <Input
-          placeholder="Username"
-          {...register("username", { required: true })}
-        />
-        <Input placeholder="Email address" {...register("email")} />
-        <Input placeholder="Password" {...register("password")} />
-
+        {renderRegisterForm}
         <Button fullWidth>Register</Button>
       </form>
     </div>
