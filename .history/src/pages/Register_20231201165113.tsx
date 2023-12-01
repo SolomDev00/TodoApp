@@ -4,7 +4,6 @@ import Input from "../components/schema/Input";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { REGISTER_FORM } from "../data";
 import { yupResolver } from "@hookform/resolvers/yup";
-import registerSchema from "../validation";
 
 interface IFormInput {
   username: string;
@@ -17,9 +16,7 @@ const RegisterPage = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<IFormInput>({
-    resolver: yupResolver(registerSchema),
-  });
+  } = useForm<IFormInput>();
 
   // Handlers
   const onSubmit: SubmitHandler<IFormInput> = (data) => console.log(data);
