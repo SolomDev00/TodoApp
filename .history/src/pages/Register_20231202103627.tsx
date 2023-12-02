@@ -16,7 +16,7 @@ interface IFormInput {
 }
 
 const RegisterPage = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const {
     register,
@@ -28,20 +28,23 @@ const RegisterPage = () => {
 
   // Handlers
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    setIsLoading(true);
+    setLoading(true);
     try {
       const { status } = await axiosInstance.post("/auth/local/register", data);
       if (status === 200) {
         console.log("Done", status);
-        toast.success("Register is done, you will navigate after 4 seconds!", {
-          position: "bottom-center",
-          duration: 4000,
-        });
+        toast.success(
+          "You will navigate to the login page after 4 seconds to login!",
+          {
+            position: "bottom-center",
+            duration: 4000,
+          }
+        );
       }
     } catch (error) {
       console.log(error);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
@@ -67,9 +70,7 @@ const RegisterPage = () => {
       </h2>
       <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
         {renderRegisterForm}
-        <Button fullWidth isLoading={isLoading}>
-          {isLoading ? "Loading ..." : "Register"}
-        </Button>
+        <Button fullWidth>{loading ? "Loading ..." : "Register"}</Button>
       </form>
       <Toaster />
     </div>

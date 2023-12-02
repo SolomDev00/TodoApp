@@ -16,7 +16,7 @@ interface IFormInput {
 }
 
 const RegisterPage = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const {
     register,
@@ -28,7 +28,7 @@ const RegisterPage = () => {
 
   // Handlers
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    setIsLoading(true);
+    setLoading(true);
     try {
       const { status } = await axiosInstance.post("/auth/local/register", data);
       if (status === 200) {
@@ -41,7 +41,7 @@ const RegisterPage = () => {
     } catch (error) {
       console.log(error);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
@@ -67,9 +67,7 @@ const RegisterPage = () => {
       </h2>
       <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
         {renderRegisterForm}
-        <Button fullWidth isLoading={isLoading}>
-          {isLoading ? "Loading ..." : "Register"}
-        </Button>
+        <Button fullWidth>{loading ? "Loading ..." : "Register"}</Button>
       </form>
       <Toaster />
     </div>

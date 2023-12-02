@@ -6,8 +6,6 @@ import { REGISTER_FORM } from "../data";
 import { yupResolver } from "@hookform/resolvers/yup";
 import registerSchema from "../validation";
 import axiosInstance from "../config/axios.config";
-import toast, { Toaster } from "react-hot-toast";
-import { useState } from "react";
 
 interface IFormInput {
   username: string;
@@ -16,8 +14,6 @@ interface IFormInput {
 }
 
 const RegisterPage = () => {
-  const [isLoading, setIsLoading] = useState(false);
-
   const {
     register,
     handleSubmit,
@@ -27,23 +23,13 @@ const RegisterPage = () => {
   });
 
   // Handlers
-  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    setIsLoading(true);
-    try {
-      const { status } = await axiosInstance.post("/auth/local/register", data);
-      if (status === 200) {
-        console.log("Done", status);
-        toast.success("Register is done, you will navigate after 4 seconds!", {
-          position: "bottom-center",
-          duration: 4000,
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => console.log(data);
+
+  try {
+    await axiosInstance.post("/auth/local/register");
+  } catch (error) {
+    console.log(error);
+  }
 
   // Renders
   const renderRegisterForm = REGISTER_FORM.map(
@@ -67,11 +53,8 @@ const RegisterPage = () => {
       </h2>
       <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
         {renderRegisterForm}
-        <Button fullWidth isLoading={isLoading}>
-          {isLoading ? "Loading ..." : "Register"}
-        </Button>
+        <Button fullWidth>Register</Button>
       </form>
-      <Toaster />
     </div>
   );
 };
