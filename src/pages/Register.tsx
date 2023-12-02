@@ -4,7 +4,7 @@ import Input from "../components/schema/Input";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { REGISTER_FORM } from "../data";
 import { yupResolver } from "@hookform/resolvers/yup";
-import registerSchema from "../validation";
+import { registerSchema } from "../validation";
 import axiosInstance from "../config/axios.config";
 import toast from "react-hot-toast";
 import { useState } from "react";
@@ -60,7 +60,6 @@ const RegisterPage = () => {
           placeholder={placeholder}
           {...register(name, validation)}
         />
-
         {errors[name] && <InputErrorMessage msg={errors[name]?.message} />}
       </div>
     )
@@ -74,7 +73,7 @@ const RegisterPage = () => {
       <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
         {renderRegisterForm}
         <Button fullWidth isLoading={isLoading}>
-          {isLoading ? "Loading ..." : "Register"}
+          Register
         </Button>
       </form>
     </div>

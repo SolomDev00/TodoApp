@@ -1,6 +1,6 @@
 import * as yup from "yup";
 
-const registerSchema = yup
+export const registerSchema = yup
   .object({
     username: yup
       .string()
@@ -17,4 +17,15 @@ const registerSchema = yup
   })
   .required();
 
-export default registerSchema;
+export const loginSchema = yup
+  .object({
+    identifier: yup
+      .string()
+      .required("Email is required!")
+      .matches(/^[^@]+@[^@]+\.[^@ .]{2,}$/, "Email address is not Valid!"),
+    password: yup
+      .string()
+      .required("Password is required!")
+      .min(6, "Password should be at least 5 characters!"),
+  })
+  .required();
