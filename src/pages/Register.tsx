@@ -6,8 +6,10 @@ import { REGISTER_FORM } from "../data";
 import { yupResolver } from "@hookform/resolvers/yup";
 import registerSchema from "../validation";
 import axiosInstance from "../config/axios.config";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { useState } from "react";
+import { AxiosError } from "axios";
+import { IErrorResponse } from "../interfaces";
 
 interface IFormInput {
   username: string;
@@ -32,14 +34,18 @@ const RegisterPage = () => {
     try {
       const { status } = await axiosInstance.post("/auth/local/register", data);
       if (status === 200) {
-        console.log("Done", status);
         toast.success("Register is done, you will navigate after 4 seconds!", {
           position: "bottom-center",
           duration: 4000,
         });
       }
     } catch (error) {
-      console.log(error);
+      const errorObj = error as AxiosError<IErrorResponse>;
+      const message = errorObj.response?.data.error.message;
+      toast.error(`${message}`, {
+        position: "bottom-center",
+        duration: 4000,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -71,7 +77,6 @@ const RegisterPage = () => {
           {isLoading ? "Loading ..." : "Register"}
         </Button>
       </form>
-      <Toaster />
     </div>
   );
 };
