@@ -13,10 +13,11 @@ const TodoList = () => {
   const cookie = new Cookies();
   const userData = cookie.get("userLogged");
 
-  const [isOpenConfirmModal, setIsOpenConfirmModal] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isOpenAddModal, setIsOpenAddModal] = useState(false);
+  const [queryVersion, setQueryVersion] = useState(1);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [isOpenAddModal, setIsOpenAddModal] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isOpenConfirmModal, setIsOpenConfirmModal] = useState(false);
   const [todoToAdd, setTodoToAdd] = useState({
     title: "",
     description: "",
@@ -28,7 +29,7 @@ const TodoList = () => {
   });
 
   const { data, isLoading } = useAuthenticatedQuery({
-    queryKey: ["todoList", `${todoToEdit.id}`],
+    queryKey: ["todoList", `${queryVersion}`],
     URL: "users/me?populate=todos",
     config: {
       headers: {
@@ -115,6 +116,7 @@ const TodoList = () => {
 
       if (status === 200) {
         onCloseAddModal();
+        setQueryVersion((prev) => prev + 1);
       }
     } catch (error) {
       console.log(error);
@@ -140,6 +142,7 @@ const TodoList = () => {
 
       if (status === 200) {
         onCloseEditModal();
+        setQueryVersion((prev) => prev + 1);
       }
     } catch (error) {
       console.log(error);
@@ -158,6 +161,7 @@ const TodoList = () => {
 
       if (status === 200) {
         closeConfirmModal();
+        setQueryVersion((prev) => prev + 1);
       }
     } catch (error) {
       console.log(error);
