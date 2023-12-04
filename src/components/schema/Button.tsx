@@ -40,9 +40,11 @@ interface ButtonProps
   fullWidth?: boolean;
   isLoading?: boolean;
   children: ReactNode;
+  type?: "submit" | "button" | "reset";
 }
 
 const Button = ({
+  type,
   variant,
   size,
   isLoading,
@@ -53,6 +55,7 @@ const Button = ({
 }: ButtonProps) => {
   return (
     <button
+      type={type}
       className={cn(buttonVariants({ variant, size, fullWidth, className }))}
       disabled={isLoading}
       {...props}
