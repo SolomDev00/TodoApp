@@ -10,6 +10,7 @@ import axiosInstance from "../config/axios.config";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
 import { IErrorResponse } from "../interfaces";
+import Cookies from "universal-cookie";
 
 interface IFormInput {
   identifier: string;
@@ -19,6 +20,9 @@ interface IFormInput {
 const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
 
+  // ** Cookies
+  const cookie = new Cookies();
+
   const {
     register,
     handleSubmit,
@@ -27,30 +31,38 @@ const LoginPage = () => {
     resolver: yupResolver(loginSchema),
   });
 
-  // Handlers
+  // ** Handlers
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     setIsLoading(true);
     try {
-      const { status } = await axiosInstance.post("/auth/local", data);
+      const { status, data: resData } = await axiosInstance.post(
+        "/auth/local",
+        data
+      );
+      console.log(resData);
       if (status === 200) {
-        toast.success("Login is done, you will navigate after 4 seconds!", {
+        toast.success("Login is done, you will navigate after 2 seconds!", {
           position: "bottom-center",
           duration: 4000,
         });
+        cookie.set("userLogged", resData);
+        setTimeout(() => {
+          location.replace("/");
+        }, 2000);
       }
     } catch (error) {
       const errorObj = error as AxiosError<IErrorResponse>;
       const message = errorObj.response?.data.error.message;
       toast.error(`${message}`, {
         position: "bottom-center",
-        duration: 4000,
+        duration: 1500,
       });
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Renders
+  // ** Renders
   const renderLoginForm = LOGIN_FORM.map(
     ({ name, placeholder, type, validation }, idx) => (
       <div key={idx}>
