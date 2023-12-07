@@ -8,6 +8,7 @@ import Textarea from "./schema/Textarea";
 import Cookies from "universal-cookie";
 import useAuthenticatedQuery from "../hooks/useAuthenticatedQuery";
 import TodoSkeleton from "./TodoSkeleton";
+import { onGenerateTodos } from "../utils/functions";
 // import { faker } from "@faker-js/faker";
 
 const TodoList = () => {
@@ -196,7 +197,7 @@ const TodoList = () => {
             <Button size={"sm"} onClick={onOpenAddModal}>
               Post new todo
             </Button>
-            <Button variant={"outline"} size={"sm"}>
+            <Button variant={"outline"} size={"sm"} onClick={onGenerateTodos}>
               Generate todos
             </Button>
           </div>

@@ -21,8 +21,8 @@ const Paginator = ({
         Page
         <span className="mx-1 font-semibold text-gray-900 text-md">{page}</span>
         to
-        <span className="mx-1 font-semibold text-gray-900">{pageCount}</span> of
-        <span className="mx-1 font-semibold text-gray-900">{total}</span>{" "}
+        <span className="mx-1 font-semibold text-gray-900">{pageCount}</span>of
+        <span className="mx-1 font-semibold text-gray-900">{total}</span>
         Records
       </p>
 
