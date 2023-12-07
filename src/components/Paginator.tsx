@@ -26,7 +26,7 @@ const Paginator = ({
         Records
       </p>
 
-      <div className="flex items-center">
+      <div className="flex items-center mx-auto">
         <button
           type="button"
           className="bg-gray-800 text-white rounded-l-md border-r border-gray-100 py-2 hover:bg-indigo-700 duration-300 hover:text-white px-3 disabled:cursor-not-allowed disabled:bg-gray-400 disabled:hover:bg-gray-400"
