@@ -1,3 +1,7 @@
+.active {
+  color: #4f46e5;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

@@ -37,9 +37,12 @@ const Navbar = () => {
         ) : (
           <div className="flex flex-row items-center text-indigo-600 space-x-2">
             <h3 className="text-gray-500 text-sm font-semibold">
-              <NavLink to={"/profile"}>
-                Hello, {userData.user.username} 👋
-              </NavLink>
+              <div className="flex space-x-3">
+                <NavLink to={"/todos"}>Todos</NavLink>
+                <NavLink to={"/profile"}>
+                  Hello, {userData.user.username} 👋
+                </NavLink>
+              </div>
             </h3>
             <Button onClick={Logout} size={"sm"}>
               Logout

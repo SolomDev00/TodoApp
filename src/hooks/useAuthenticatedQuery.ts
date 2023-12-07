@@ -1,23 +1,23 @@
-import { AxiosRequestConfig } from "axios";
 import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "../config/axios.config";
+import { AxiosRequestConfig } from "axios";
 
 interface IAuthenticatedQuery {
-  URL: string;
   queryKey: string[];
+  URL: string;
   config?: AxiosRequestConfig;
 }
 
 const useAuthenticatedQuery = ({
+  queryKey,
   URL,
   config,
-  queryKey,
 }: IAuthenticatedQuery) => {
   return useQuery({
     queryKey,
     queryFn: async () => {
       const { data } = await axiosInstance.get(URL, config);
-      return data.todos;
+      return data;
     },
   });
 };

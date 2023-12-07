@@ -11,14 +11,13 @@ import HomePage from "../pages";
 import LoginPage from "../pages/Login";
 import RegisterPage from "../pages/Register";
 import Cookies from "universal-cookie";
+import TodosPage from "../pages/Todos";
 
 // ** Cookies
 const cookie = new Cookies();
 
 const cookiesKey = "userLogged";
 const userData = cookie.get(cookiesKey);
-
-console.log(userData);
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -34,6 +33,18 @@ const router = createBrowserRouter(
               data={userData}
             >
               <HomePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="todos"
+          element={
+            <ProtectedRoute
+              isAllowed={userData?.jwt}
+              redirectPath="/login"
+              data={userData}
+            >
+              <TodosPage />
             </ProtectedRoute>
           }
         />

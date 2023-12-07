@@ -8,16 +8,17 @@ import Textarea from "./schema/Textarea";
 import Cookies from "universal-cookie";
 import useAuthenticatedQuery from "../hooks/useAuthenticatedQuery";
 import TodoSkeleton from "./TodoSkeleton";
+// import { faker } from "@faker-js/faker";
 
 const TodoList = () => {
   const cookie = new Cookies();
   const userData = cookie.get("userLogged");
-
   const [queryVersion, setQueryVersion] = useState(1);
-  const [isUpdating, setIsUpdating] = useState(false);
-  const [isOpenAddModal, setIsOpenAddModal] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [isOpenConfirmModal, setIsOpenConfirmModal] = useState(false);
+  const [isOpenAddModal, setIsOpenAddModal] = useState(false);
+
   const [todoToAdd, setTodoToAdd] = useState({
     title: "",
     description: "",
@@ -27,10 +28,9 @@ const TodoList = () => {
     title: "",
     description: "",
   });
-
-  const { data, isLoading } = useAuthenticatedQuery({
+  const { isLoading, data } = useAuthenticatedQuery({
     queryKey: ["todoList", `${queryVersion}`],
-    URL: "users/me?populate=todos",
+    URL: "/users/me?populate=todos",
     config: {
       headers: {
         Authorization: `Bearer ${userData.jwt}`,
@@ -59,7 +59,6 @@ const TodoList = () => {
     });
     setIsEditModalOpen(false);
   };
-
   const onOpenEditModal = (todo: ITodo) => {
     setTodoToEdit(todo);
     setIsEditModalOpen(true);
@@ -73,16 +72,16 @@ const TodoList = () => {
     });
     setIsOpenConfirmModal(false);
   };
-
   const openConfirmModal = (todo: ITodo) => {
     setTodoToEdit(todo);
     setIsOpenConfirmModal(true);
   };
 
-  const onChangeAddHandler = (
+  const onChangeAddTodoHandler = (
     evt: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { value, name } = evt.target;
+
     setTodoToAdd({
       ...todoToAdd,
       [name]: value,
@@ -93,20 +92,41 @@ const TodoList = () => {
     evt: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { value, name } = evt.target;
+
     setTodoToEdit({
       ...todoToEdit,
       [name]: value,
     });
   };
 
+  const onSubmitRemoveTodo = async () => {
+    try {
+      const { status } = await axiosInstance.delete(`/todos/${todoToEdit.id}`, {
+        headers: {
+          Authorization: `Bearer ${userData.jwt}`,
+        },
+      });
+
+      if (status === 200) {
+        closeConfirmModal();
+        setQueryVersion((prev) => prev + 1);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const onSubmitAddTodo = async (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
+
     setIsUpdating(true);
+
     const { title, description } = todoToAdd;
+
     try {
       const { status } = await axiosInstance.post(
         `/todos`,
-        { data: { title, description } },
+        { data: { title, description, user: [userData.user.id] } },
         {
           headers: {
             Authorization: `Bearer ${userData.jwt}`,
@@ -127,8 +147,11 @@ const TodoList = () => {
 
   const onSubmitUpdateTodo = async (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
+
     setIsUpdating(true);
+
     const { title, description } = todoToEdit;
+
     try {
       const { status } = await axiosInstance.put(
         `/todos/${todoToEdit.id}`,
@@ -151,26 +174,9 @@ const TodoList = () => {
     }
   };
 
-  const onSubmitRemoveTodo = async () => {
-    try {
-      const { status } = await axiosInstance.delete(`/todos/${todoToEdit.id}`, {
-        headers: {
-          Authorization: `Bearer ${userData.jwt}`,
-        },
-      });
-
-      if (status === 200) {
-        closeConfirmModal();
-        setQueryVersion((prev) => prev + 1);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   if (isLoading)
     return (
-      <div className="space-y-4 p-3">
+      <div className="space-y-1 p-3">
         {Array.from({ length: 3 }, (_, idx) => (
           <TodoSkeleton key={idx} />
         ))}
@@ -180,13 +186,25 @@ const TodoList = () => {
   return (
     <div className="space-y-1">
       <div className="w-fit mx-auto my-10">
-        <Button size={"sm"} onClick={onOpenAddModal}>
-          Post new Todo
-        </Button>
+        {isLoading ? (
+          <div className="flex items-center space-x-2">
+            <div className="w-32 h-9 bg-gray-300 rounded-md dark:bg-gray-400"></div>
+            <div className="w-32 h-9 bg-gray-300 rounded-md dark:bg-gray-400"></div>
+          </div>
+        ) : (
+          <div className="flex items-center space-x-2">
+            <Button size={"sm"} onClick={onOpenAddModal}>
+              Post new todo
+            </Button>
+            <Button variant={"outline"} size={"sm"}>
+              Generate todos
+            </Button>
+          </div>
+        )}
       </div>
 
-      {data && data.length ? (
-        data.map((todo: ITodo) => (
+      {data.todos.length ? (
+        data.todos.map((todo: ITodo) => (
           <div
             key={todo.id}
             className="flex items-center justify-between hover:bg-gray-100 duration-300 p-3 rounded-md even:bg-gray-100"
@@ -212,22 +230,22 @@ const TodoList = () => {
         <h3>No todos yet!</h3>
       )}
 
-      {/* Add Todo Modal */}
+      {/* Add todo modal */}
       <Modal
         isOpen={isOpenAddModal}
         closeModal={onCloseAddModal}
-        title="Add new Todo"
+        title="Add a new todo"
       >
         <form className="space-y-3" onSubmit={onSubmitAddTodo}>
           <Input
             name="title"
             value={todoToAdd.title}
-            onChange={onChangeAddHandler}
+            onChange={onChangeAddTodoHandler}
           />
           <Textarea
             name="description"
             value={todoToAdd.description}
-            onChange={onChangeAddHandler}
+            onChange={onChangeAddTodoHandler}
           />
           <div className="flex items-center space-x-3 mt-4">
             <Button
@@ -243,7 +261,7 @@ const TodoList = () => {
         </form>
       </Modal>
 
-      {/* Edit Todo Modal */}
+      {/* Edit todo modal */}
       <Modal
         isOpen={isEditModalOpen}
         closeModal={onCloseEditModal}
