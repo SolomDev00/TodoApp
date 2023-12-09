@@ -29,6 +29,7 @@ const TodoList = () => {
     title: "",
     description: "",
   });
+
   const { isLoading, data } = useAuthenticatedQuery({
     queryKey: ["todoList", `${queryVersion}`],
     URL: "/users/me?populate=todos",
@@ -60,6 +61,7 @@ const TodoList = () => {
     });
     setIsEditModalOpen(false);
   };
+
   const onOpenEditModal = (todo: ITodo) => {
     setTodoToEdit(todo);
     setIsEditModalOpen(true);
@@ -73,6 +75,7 @@ const TodoList = () => {
     });
     setIsOpenConfirmModal(false);
   };
+
   const openConfirmModal = (todo: ITodo) => {
     setTodoToEdit(todo);
     setIsOpenConfirmModal(true);
@@ -98,23 +101,6 @@ const TodoList = () => {
       ...todoToEdit,
       [name]: value,
     });
-  };
-
-  const onSubmitRemoveTodo = async () => {
-    try {
-      const { status } = await axiosInstance.delete(`/todos/${todoToEdit.id}`, {
-        headers: {
-          Authorization: `Bearer ${userData.jwt}`,
-        },
-      });
-
-      if (status === 200) {
-        closeConfirmModal();
-        setQueryVersion((prev) => prev + 1);
-      }
-    } catch (error) {
-      console.log(error);
-    }
   };
 
   const onSubmitAddTodo = async (evt: FormEvent<HTMLFormElement>) => {
@@ -175,6 +161,23 @@ const TodoList = () => {
     }
   };
 
+  const onSubmitRemoveTodo = async () => {
+    try {
+      const { status } = await axiosInstance.delete(`/todos/${todoToEdit.id}`, {
+        headers: {
+          Authorization: `Bearer ${userData.jwt}`,
+        },
+      });
+
+      if (status === 200) {
+        closeConfirmModal();
+        setQueryVersion((prev) => prev + 1);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   if (isLoading)
     return (
       <div className="space-y-1 p-3">
@@ -197,7 +200,12 @@ const TodoList = () => {
             <Button size={"sm"} onClick={onOpenAddModal}>
               Post new todo
             </Button>
-            <Button variant={"outline"} size={"sm"} onClick={onGenerateTodos}>
+            <Button
+              variant={"outline"}
+              size={"sm"}
+              onClick={onGenerateTodos}
+              title="Make a faker Todos!"
+            >
               Generate todos
             </Button>
           </div>

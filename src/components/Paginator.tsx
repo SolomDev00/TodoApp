@@ -23,7 +23,7 @@ const Paginator = ({
         to
         <span className="mx-1 font-semibold text-gray-900">{pageCount}</span>of
         <span className="mx-1 font-semibold text-gray-900">{total}</span>
-        Records
+        Records.
       </p>
 
       <div className="flex items-center mx-auto">

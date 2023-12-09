@@ -12,6 +12,7 @@ import LoginPage from "../pages/Login";
 import RegisterPage from "../pages/Register";
 import Cookies from "universal-cookie";
 import TodosPage from "../pages/Todos";
+import UserProfile from "../pages/UserProfile";
 
 // ** Cookies
 const cookie = new Cookies();
@@ -56,7 +57,7 @@ const router = createBrowserRouter(
               redirectPath="/login"
               data={userData}
             >
-              <p>GHii</p>
+              <UserProfile />
             </ProtectedRoute>
           }
         />
